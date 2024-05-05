@@ -1,0 +1,84 @@
+.idea
+.vscode
+
+!.env.example
+.env
+.env.backup
+.env.production
+.docker/.env
+.make/.env
+.phpunit.result.cache
+*/vendor
+*vendor/*
+*~
+
+# Email spool folder
+/app/spool/*
+
+# Cache, session files and logs (Symfony3)
+var/cache/*
+var/logs/*
+var/sessions/*
+var/storage/*.key
+var/tmp/*
+!var/cache/.gitkeep
+!var/logs/.gitkeep
+!var/sessions/.gitkeep
+!var/storage/docs/*
+
+# Logs (Symfony4)
+/var/log/*
+!var/log/.gitkeep
+
+# Parameters
+/app/config/parameters.yml
+/app/config/parameters.ini
+
+# Managed by Composer
+/app/bootstrap.php.cache
+/var/bootstrap.php.cache
+/bin/*
+!bin/console
+!bin/symfony_requirements
+/vendor/
+
+# Assets and user uploads
+/web/bundles/
+/web/uploads/
+
+# Build data
+/build/
+
+# Composer PHAR
+/composer.phar
+
+# Backup entities generated with doctrine:generate:entities command
+**/Entity/*~
+
+# Embedded web-server pid file
+/.web-server-pid
+
+/.phpunit.cache
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+
+auth.json
+npm-debug.log
+yarn-error.log
+
+node_modules/
+
+# Laravel 5 & Lumen specific
+public/storage
+public/hot
+
+# Laravel 5 & Lumen specific with changed public path
+public_html/storage
+public_html/hot
+
+storage/*.key
+Homestead.yaml
+Homestead.json
+

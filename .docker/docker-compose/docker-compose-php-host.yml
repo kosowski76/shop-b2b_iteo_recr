@@ -1,0 +1,20 @@
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  php-host:
+    image: ${DOCKER_REGISTRY?}/${DOCKER_NAMESPACE?}/php-host-${ENV?}:${TAG?}
+    build:
+      context: ../
+      dockerfile: images/php/php-host/Dockerfile
+      args:
+        - ALPINE_VERSION=${ALPINE_VERSION?}
+        - APP_CODE_PATH=${APP_CODE_PATH_CONTAINER?}
+        - APP_GROUP_ID=${APP_GROUP_ID?}
+        - APP_GROUP_NAME=${APP_GROUP_NAME?}
+        - APP_USER_ID=${APP_USER_ID?}
+        - APP_USER_NAME=${APP_USER_NAME?}
+        - COMPOSER_VERSION=${COMPOSER_VERSION?}
+        - ENV=${ENV?}
+        - SYSTEM_VERSION=${SYSTEM_VERSION?}
+        - TARGET_PHP_VERSION=${PHP_VERSION?}
+      target: ${ENV?}
