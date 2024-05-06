@@ -70,8 +70,140 @@ dla systemów Windows 10/11 są w trakcie testów i rozwoju.
       =>
   $ bash ./.docker/docker-test.sh
 
+  ! Jak widać praca jest owiele wygodniejsza i bardziej efektywna
+
+  !! i działa odrazu po wyjęciu z pudełka
+
+
+  03. [x] Symfony setup and run initial tests.
+
+    $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND='composer create-project symfony/skeleton /tmp/symfony --no-install --no-scripts'
+
+    $ rm -rf appservice/public/ appservice/tests/ appservice/composer.* appservice/phpunit.xml
+    $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND="bash -c 'mv -n /tmp/symfony/{.*,*} .' && rm -f /tmp/symfony"
+
+    $ make composer ARGS='install'
+    $ make composer ARGS='require --dev "phpunit/phpunit"'
+
+    $ make test
+
+
+ ### 02. Problem solutions
+ 
+  01. [x] Sformułowanie i analiza problemu,
+
+    - przygotowanie podstawowych diagramów użycia
+    - projektowanie
+    - zaprojektowanie modeli 
+
+    - przygotowanie ogólnych testów (Test Driven Development)
+    - projektowanie funkcjonalności
+    - testowanie
+    - ekspoloatacja
+
+  02. [x] Przygotowanie podstawowych diagramów użycia
+
+ ## Sklep B2B e-commerce - Diagram przypadków użycia
+  <details>
+  <summary><b>Kliknij tutaj:</b> <i>Sklep B2B e-commerce</i> - Diagram przypadków użycia!</summary>
+
+   * ![diagram1 local view](./var/images/01_01_customer-order_use-diagram.jpg)
+  </details>
+
+  03. [ ] Projektowanie: 
+  
+    - Wybranie kolejności zadań: 34, 36, 35,
+    Głównym zadaniem jest 35 - 'Przesłanie zamówienia do CRM', aby móc je wykonać w ciągu,
+    wybrałem w pierwszej kolejności taski od których to zadanie jest zależne
+    36 - 'Walidacja zamówienia', który jest zależny od zadania 34 - 'Saldo klienta', oraz
+    dodatkowej funkcjonalnośi weryfikującej 'Zlecenie' pod względem ilości produktów i wagi.
+    Co w pierwszej kolejności wymaga utworzenia kona użytkownika, jego uwierzytelnienia
+    i autoryzacji.
+
+
+
+    - [ ] Projektowanie przykładowych testów dla schematów Doctrine
+
+      $ make composer ARGS="require doctrine/orm"
+      $ make composer ARGS="require doctrine/doctrine-bundle"
+
+    - [ ] Token JWT
+
+      $ mkdir -p config/jwt
+
+      $ make composer ARGS='require "lexik/jwt-authentication-bundle"'
+
+      $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND="php bin/console lexik:jwt:generate-keypair"
+      $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND="chmod 644 config/jwt/public.pem config/jwt/private.pem"
+
+      $ make composer ARGS="require --dev orm-fixtures"
+
+      $ make composer ARGS="require symfony/uid"
+
+
+
+
+    - [ ] Utworzenie użytkownika i systemu logowania
+
+
+
+
+    - [ ] Utworzenie Modeli - Encji
+
+      w jakim sensie jest pojęcie 'Saldo'? - Saldo wewnętrzne CRM czy zewnętrzne bankowe?
+      jedno konto płatnicze, kanał płatniczy czy kilka? 
+
+    {
+      "orderId": uuid,
+      "clientId": uuid,
+      "products": [
+        {
+          "productId": string,
+          "quantity": int,
+          "price": float,
+          "weight": float
+        }
+      ]
+    }
+
+      w order details
+       Request "productId": string, w sytemie CRM Request "productId": uuid,
+       "guantity": int - ilość produktu danego rodzaju określonego 'productId'
+       "price": float - cena jednej jednostki/sztuki produktu 'productId' o określonej wadze "weight": float,
+       "weight": float - waga jednej jednostki produku
+
+    - [ ] Definicja schematów Doctrine
+  
+    Jest to wersja dla środowiska developerskiego więc mogą występować dodatkowo klasy,
+    pola, metody, funkcje itp., nie wykorzystane lub zakomentowane, (generalnie clean code, 
+    comments less, use only important comments at development environment)
+    ale umieściłem je z zamysłem co było zaznaczone w specyfijcaji zadań,
+    jest to tylko część sugestii, które powinny być już wcześniej zaprojektowane
+    na etapie projektowania problemu i jego rozwiązania,
+
+    Ilość testów ograniczona, wykonane tylko dla celów prezentacyjnych i merytorycznych.
+
+    W przypadku problemu z uruchomieniem pod systemami Linux, Mac z powodu uprawinień
+    istnieje kilka rozwiązań problemu, niektóre propozycje rozwiązania:
+
+    - uruchamiać aplikację z poziomu root (nie rekomendowane, odradzam !!!)
+    - ustawienie uprawnień dla wszystkich użytkowników (nie rekomendowane - problemy!)
+    - ustawienie użtkownika dla kontenerów (rekomendowane)
+    i inne.
+    Niniesze problemy nie są tematem tej publikacji więc nie kładę nacisku 
+    na wybór rozwiązania, pozostawiam to indiwidualnym możliwościom.
+
+    $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND="bin/console doctrine:schema:drop --full-database --force"
+    $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND="php bin/console doctrine:schema:update --force"
+
+    - [ ] Utworzenie kilku przykładowych fixtures
+
+    $ make composer ARGS="require symfony/security-bundle"
+
+    $ make composer ARGS="require --dev orm-fixtures"
+    $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND="php bin/console doctrine:fixtures:load"
+
+    - [ ]
   ! Jak widać praca jest owiele wygodniejsza i bardziej efektywna 
-
-
 
 
