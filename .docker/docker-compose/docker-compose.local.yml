@@ -1,0 +1,100 @@
+name: ${COMPOSE_PROJECT_NAME}
+
+networks:
+  network:
+    driver: ${NETWORKS_DRIVER?}
+
+volumes:
+  mysql:
+    name: ${COMPOSE_PROJECT_NAME?}_mysql-${ENV?}
+    driver: ${VOLUMES_DRIVER?}
+  mysql-test:
+    name: ${COMPOSE_PROJECT_NAME?}_mysql-test-${ENV?}
+    driver: ${VOLUMES_DRIVER?}
+
+services:
+  php-fpm:
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG?}
+    cap_add:
+      - "SYS_PTRACE"
+    security_opt:
+      - "seccomp=unconfined"
+    volumes:
+      - ${APP_CODE_PATH_HOST?}:${APP_CODE_PATH_CONTAINER?}
+    networks:
+      - network
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  nginx:
+    volumes:
+      - ${APP_CODE_PATH_HOST?}:${APP_CODE_PATH_CONTAINER?}
+    ports:
+      - "${NGINX_HOST_HTTP_PORT:-8080}:80"
+      - "${NGINX_HOST_HTTPS_PORT:-443}:443"
+    networks:
+      network:
+        aliases:
+          - ${APP_HOST?}
+
+  mysql:
+    image: mysql:${MYSQL_VERSION?}
+    container_name: ${COMPOSE_PROJECT_NAME?}_mysql-${ENV?}
+    platform: linux/amd64
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-application_db}
+      - MYSQL_USER=${MYSQL_USER:-application_user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD?}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD?}
+      - TZ=${TIMEZONE:-UTC}
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - network
+    ports:
+      - "${MYSQL_HOST_PORT:-3306}:3306"
+
+  mysql-test:
+    image: mysql:${MYSQL_VERSION?}
+    container_name: ${COMPOSE_PROJECT_NAME?}_mysql-test-${ENV?}
+    platform: linux/amd64
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-application_db_test}
+      - MYSQL_USER=${MYSQL_USER:-application_user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD?}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD?}
+      - TZ=${TIMEZONE:-UTC}
+    volumes:
+      - mysql-test:/var/lib/mysql
+    networks:
+      - network
+    ports:
+      - "${MYSQL_HOST_PORT_TEST:-3305}:3306"
+
+  php-cli:
+    image: ${DOCKER_REGISTRY?}/${DOCKER_NAMESPACE?}/php-cli-${ENV?}:${TAG?}
+    container_name: ${COMPOSE_PROJECT_NAME?}_php-cli-${ENV?}
+    build:
+      context: ../
+      dockerfile: ./images/php/php-cli/Dockerfile
+      args:
+        - HOST_IMAGE=${DOCKER_REGISTRY?}/${DOCKER_NAMESPACE?}/php-host-${ENV?}:${TAG?}
+        - APP_SSH_PASSWORD=${APP_SSH_PASSWORD?}
+        - ENV=${ENV?}
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG?}
+    cap_add:
+      - "SYS_PTRACE"
+    security_opt:
+      - "seccomp=unconfined"
+    volumes:
+      - ${APP_CODE_PATH_HOST?}:${APP_CODE_PATH_CONTAINER?}
+    ports:
+      - "${APPLICATION_SSH_HOST_PORT:-2222}:22"
+    tty: true
+    networks:
+      - network
+    extra_hosts:
+      - host.docker.internal:host-gateway
+

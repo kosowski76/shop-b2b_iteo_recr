@@ -1,0 +1,24 @@
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  php-fpm:
+    image: ${DOCKER_REGISTRY?}/${DOCKER_NAMESPACE?}/php-fpm-${ENV?}:${TAG?}
+    container_name: ${COMPOSE_PROJECT_NAME?}_php-fpm-${ENV?}
+    build:
+      context: ../
+      dockerfile: ./images/php/php-fpm/Dockerfile
+      target: ${ENV?}
+      args:
+        - HOST_IMAGE=${DOCKER_REGISTRY?}/${DOCKER_NAMESPACE?}/php-host-${ENV?}:${TAG?}
+        - TARGET_PHP_VERSION=${PHP_VERSION?}
+
+  nginx:
+    image: ${DOCKER_REGISTRY?}/${DOCKER_NAMESPACE?}/nginx-${ENV?}:${TAG?}
+    container_name: ${COMPOSE_PROJECT_NAME?}_nginx-${ENV?}
+    build:
+      context: ../
+      dockerfile: ./images/nginx/Dockerfile
+      target: ${ENV?}
+      args:
+        - APP_CODE_PATH=${APP_CODE_PATH_CONTAINER?}
+        - NGINX_VERSION=${NGINX_VERSION?}
