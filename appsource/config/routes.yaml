@@ -1,0 +1,53 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+main_dashboard:
+    path: /
+    methods: GET
+    controller: App\Controller\Main\MainController::index
+
+api_login_check:
+    path: /api/login_check
+
+api_client_register:
+    path: /api/client
+    methods: POST
+    controller: App\Controller\Client\ClientController::registerClientApi
+
+api_purchase_list:
+    path: /api/order
+    methods: GET
+    controller: App\Controller\Purchase\PurchaseController::index
+
+api_purchase_create:
+    path: /api/order
+    methods: POST
+    controller: App\Controller\Purchase\PurchaseController::createPurchase
+
+api_purchase_update:
+    path: /api/order
+    methods: PUT
+    controller: App\Controller\Purchase\PurchaseController::updatePurchase
+
+api_client_dashboard:
+    path: /api/client
+    methods: GET
+    controller: App\Controller\Client\ClientController::index
+
+api_client_create:
+    path: /api/clients
+    methods: POST
+    controller: App\Controller\Client\ClientController::addClient
+
+api_admin_dashboard:
+    path: /api/dashboard-admin
+    methods: GET
+    controller: App\Controller\Admin\AdminController::index
+
+client_register:
+    path: /client
+    methods: POST
+    controller: App\Controller\Client\ClientController::registerClient
