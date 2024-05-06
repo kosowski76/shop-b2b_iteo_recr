@@ -204,3 +204,6 @@ dla systemów Windows 10/11 są w trakcie testów i rozwoju.
     $ make execute-in-container DOCKER_SERVICE_NAME="application" COMMAND="php bin/console doctrine:fixtures:load"
 
     - [ ]
+  ! Jak widać praca jest owiele wygodniejsza i bardziej efektywna 
+
+
