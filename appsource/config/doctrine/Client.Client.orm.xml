@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domain\Client\Client" table="client" repository-class="App\Infrastructure\Doctrine\ClientRepository">
+
+        <id name="id" type="uuid" column="id" />
+        <field name="username" column="username" length="255" nullable="false" />
+        <field name="email" column="email" length="180" nullable="false" />
+        <field name="password" column="password" length="255" nullable="false" />
+
+        <one-to-many field="BankAccounts" target-entity="App\Domain\BankAccount\FirmBankAccount" mapped-by="Client">
+            <cascade><cascade-persist /><cascade-remove /></cascade>
+        </one-to-many>
+        
+        <one-to-many field="purchases" target-entity="App\Domain\Purchase\Purchase" mapped-by="Client">
+            <cascade><cascade-persist /><cascade-remove /></cascade>
+        </one-to-many>
+        
+        <field name="roles" column="roles" type="json" nullable="true"/>
+        <field name="isActive" column="isActive" length="500" nullable="true" />
+        <field name="createdAt" column="created_at" type="datetime" nullable="true" />
+
+        <unique-constraints>
+            <unique-constraint columns="email" name="email" />
+        </unique-constraints>
+
+    </entity>
+
+</doctrine-mapping>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domain\Product\Product" table="product" repository-class="App\Infrastructure\Doctrine\ProductRepository">
+
+        <id name="id" type="uuid" column="id" />
+        <field name="name" column="name" length="120" nullable="false" />
+        <field name="description" type="text" column="description" nullable="true" />
+        <field name="weight" column="weight" type="float" scale="7" precision="3" nullable="false" />
+        <field name="purchasePrice" column="purchase_price" type="float" scale="12" precision="3" nullable="false" />
+        <field name="sellingPrice" column="selling_price" type="float" scale="12" precision="3" nullable="true" />
+        <field name="taxRate" column="tax_rate" type="integer" nullable="true" />
+
+    </entity>
+
+</doctrine-mapping>
